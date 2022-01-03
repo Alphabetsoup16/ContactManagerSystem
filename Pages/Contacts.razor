@@ -39,8 +39,12 @@ else
     <table class="table table-striped">
         <thead class="table-dark">
             <tr>
-                <th>Last Name</th>
-                <th>First Name</th>
+                <th>
+                    <span class="nav-link" onclick="@(() => SortTable("LastName"))">Last Name</span>
+                </th>
+                <th>
+                    <span class="nav-link" onclick="@(() => SortTable("FirstName"))">First Name</span>
+                </th>
                 <th>Phone Number</th>
                 <th>Date Of Birth</th>
                 <th>Action</th>
@@ -70,6 +74,11 @@ else
 
 @code {
     List<Contact> contactObj;
+    private string CurrentlySorted;
+
+    private void SortTable(string columnName){
+
+    }
     protected override async Task OnInitializedAsync()
     {
         contactObj = await Task.Run(() => contactService.GetAllContacts());
