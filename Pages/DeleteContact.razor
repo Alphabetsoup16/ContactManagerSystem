@@ -1,0 +1,69 @@
+﻿@page "/Delete/{Id}"
+@using ContactManager.Data
+@inject ContactService contactService
+@inject NavigationManager NavigationManager
+
+<h2>Delete Contact</h2>
+<hr />
+<h3>Are you sure want to delete this contact?</h3>
+<form>
+    <div class="row">
+        <div class=" col-md-8">
+            <div class="form-group">
+                <label>Contact Id:</label>
+                <label>@obj.Id</label>
+            </div>
+            <div class="form-group">
+                <label>First Name:</label>
+                <label>@obj.FirstName</label>
+            </div>
+            <div class="form-group">
+                <label>Last Name:</label>
+                <label>@obj.LastName</label>
+            </div>
+            <div class="form-group">
+                <label>Phone Number:</label>
+                <label>@obj.PhoneNumber</label>
+            </div>
+            <div class="form-group">
+                <label>Birth Date:</label>
+                <label>@obj.BirthDate.ToShortDateString()</label>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <input type="button" class="btn btn-danger" @onclick="@Delete" value="Delete" />
+                <input type="button" class="btn btn-secondary" @onclick="@Cancel" value="Cancel" />
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    Contact obj = new Contact();
+
+    protected override async Task OnInitializedAsync()
+    {
+        obj = await Task.Run(() => contactService.GetContact(Guid.Parse(Id)));
+    }
+
+    protected async void Delete()
+    {
+        await contactService.DeleteContact(obj);
+        NavigationManager.NavigateTo("Contacts");
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("Contacts");
+    }
+}
+

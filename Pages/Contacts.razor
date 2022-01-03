@@ -1,0 +1,49 @@
+﻿@page "/contacts"
+@using ContactManager.Data
+@using Syncfusion.Blazor.Grids
+@inject ContactService contactService
+
+
+<a style="text-align:right" class="nav-link" href="AddContact">
+    <span class="oi oi-plus" aria-hidden="true">  Add Contact</span>
+</a>
+<h1>Contacts</h1>
+
+@if (contactObj is null)
+{
+    <p><em>Loading Table....</em></p>
+}
+else
+{
+
+<SfGrid DataSource="@contactObj" AllowSorting="true" Height="100%" Width="100%">
+    <GridColumns>
+        <GridColumn Field=@nameof(Contact.LastName) HeaderText="Last Name" TextAlign="TextAlign.Left" Width="120"></GridColumn>
+        <GridColumn Field=@nameof(Contact.FirstName) HeaderText="First Name" TextAlign="TextAlign.Left" Width="150"></GridColumn>
+        <GridColumn Field=@nameof(Contact.PhoneNumber) HeaderText="Phone Number" TextAlign="TextAlign.Right" Width="120"></GridColumn>
+        <GridColumn Field=@nameof(Contact.BirthDate) HeaderText="Date Of Birth" Format="d" Type="ColumnType.Date" TextAlign="TextAlign.Right" Width="130"></GridColumn>
+        <GridColumn HeaderText="Actions" TextAlign="TextAlign.Center" Width="120">
+            <Template>
+                @{
+                    var contact = (context as Contact);
+                    <a class="nav-link" href="EditContact/@contact.Id">
+                        <span class="oi oi-pencil" aria-hidden="true"> Edit</span>
+                    </a>
+                    <a class="link-danger" href="Delete/@contact.Id">
+                        <span class="oi oi-trash" aria-hidden="true"> Delete</span>
+                    </a>
+                }
+            </Template>
+        </GridColumn>
+    </GridColumns>
+</SfGrid>
+}
+
+@code {
+    List<Contact> contactObj;
+    protected override async Task OnInitializedAsync()
+    {
+        contactObj = await Task.Run(() => contactService.GetAllContacts());
+    }
+}
+

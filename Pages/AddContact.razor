@@ -1,0 +1,61 @@
+﻿@page "/AddContact"
+@using ContactManager.Data
+@inject ContactService contactService
+@inject NavigationManager NavigationManager
+
+<h2>Add Contact</h2>
+<hr />
+<EditForm Model=@contact OnValidSubmit=@ValidFormSubmitted>
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label for="FirstName" class="control-label">First Name</label>
+                    <InputText @bind-Value="@contact.FirstName" class="form-control" id="FirstName"/>
+                    <ValidationMessage For="@(() => contact.FirstName)" />
+                </div>
+                <div class="form-group">
+                    <label for="LastName" class="control-label">Last Name</label>
+                    <InputText class="form-control" @bind-Value="@contact.LastName" />
+                    <ValidationMessage For="@(() => contact.LastName)" />
+                </div>
+                <div class="form-group">
+                    <label for="PhoneNumber" class="control-label">Phone Number</label>
+                    <InputText class="form-control" @bind-Value="@contact.PhoneNumber" />
+                    <ValidationMessage For="@(() => contact.PhoneNumber)" />
+                </div>
+                <div class="form-group">
+                    <label for="BirthDate" class="control-label">Birth Date</label>
+                    <input type="date" class="form-control" @bind="@contact.BirthDate" />
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <input type="button" class="btn btn-secondary" @onclick="@Cancel" value="Cancel" />
+                </div>
+            </div>
+        </div>
+</EditForm>
+
+    @code {
+
+        private Contact contact = new Contact();
+
+        public async void ValidFormSubmitted()
+        {
+            await contactService.InsertContact(contact);
+            NavigationManager.NavigateTo("Contacts");
+        }
+
+        void Cancel()
+        {
+            NavigationManager.NavigateTo("Contacts");
+        }
+    }
+
