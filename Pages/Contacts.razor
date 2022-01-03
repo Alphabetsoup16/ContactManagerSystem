@@ -15,7 +15,7 @@
 }
 else
 {
-@* <SfGrid DataSource="@contactObj" AllowSorting="true" Height="100%" Width="100%">
+<SfGrid DataSource="@contactObj" AllowSorting="true" Height="100%" Width="100%">
     <GridColumns>
         <GridColumn Field=@nameof(Contact.LastName) HeaderText="Last Name" TextAlign="TextAlign.Left" Width="120"></GridColumn>
         <GridColumn Field=@nameof(Contact.FirstName) HeaderText="First Name" TextAlign="TextAlign.Left" Width="150"></GridColumn>
@@ -35,77 +35,12 @@ else
             </Template>
         </GridColumn>
     </GridColumns>
-</SfGrid> *@
-    <table class="table table-striped">
-        <thead class="table-dark">
-            <tr>
-                <th>
-                    <span class="nav-link" onclick="@(() => SortTable("LastName"))">Last Name</span>
-                </th>
-                <th>
-                    <span class="nav-link" onclick="@(() => SortTable("FirstName"))">First Name</span>
-                </th>
-                <th>Phone Number</th>
-                <th>Date Of Birth</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var contact in contactObj)
-            {
-                <tr>
-                    <td>@contact.LastName</td>
-                    <td>@contact.FirstName</td>
-                    <td>@contact.PhoneNumber</td>
-                    <td>@contact.BirthDate.ToShortDateString()</td>
-                    <td>
-                        <a class="nav-link" href="EditContact/@contact.Id">
-                            <span class="oi oi-pencil" aria-hidden="true"> Edit</span>
-                        </a>
-                        <a class="link-danger" href="Delete/@contact.Id">
-                            <span class="oi oi-trash" aria-hidden="true"> Delete</span>
-                        </a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+</SfGrid> 
 }
 
 @code {
     List<Contact> contactObj;
-    private string CurrentlySorted;
-    private bool IsAscending;
-
-    private void SortTable(string columnName){
-        if(columnName != CurrentlySorted) 
-        {
-            contactObj = contactObj.OrderBy(c => 
-                                    c.GetType()
-                                    .GetProperty(columnName)
-                                    .GetValue(c, null)).ToList();
-            CurrentlySorted = columnName;
-            IsAscending = true;
-        }
-        else 
-        {
-            if(IsAscending)
-            {
-                contactObj = contactObj.OrderByDescending(c => 
-                                                  c.GetType()
-                                                   .GetProperty(columnName)
-                                                   .GetValue(c, null)).ToList();
-            }
-            else
-            {
-                contactObj = contactObj.OrderBy(c => 
-                                        c.GetType()
-                                         .GetProperty(columnName)
-                                         .GetValue(c, null)).ToList();
-            }
-            IsAscending = !IsAscending;
-        }
-    }
+    
     protected override async Task OnInitializedAsync()
     {
         contactObj = await Task.Run(() => contactService.GetAllContacts());

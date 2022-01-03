@@ -1,0 +1,91 @@
+﻿@page "/contactSort"
+@using ContactManager.Data
+@inject ContactService contactService
+
+@*Want to show another way to sort table by first and last name.
+  I could also make a switch statement or query/where statements*@
+
+<a style="text-align:right" class="nav-link" href="AddContact">
+    <span class="oi oi-plus" aria-hidden="true">  Add Contact</span>
+</a>
+<h1>Contacts</h1>
+
+@if (contactObj is null)
+{
+    <p><em>Loading Table....</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>
+                    <span class="nav-link" onclick="@(() => SortTable("LastName"))">Last Name</span>
+                </th>
+                <th>
+                    <span class="nav-link" onclick="@(() => SortTable("FirstName"))">First Name</span>
+                </th>
+                <th>Phone Number</th>
+                <th>Date Of Birth</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var contact in contactObj)
+            {
+                <tr>
+                    <td>@contact.LastName</td>
+                    <td>@contact.FirstName</td>
+                    <td>@contact.PhoneNumber</td>
+                    <td>@contact.BirthDate.ToShortDateString()</td>
+                    <td>
+                        <a class="nav-link" href="EditContact/@contact.Id">
+                            <span class="oi oi-pencil" aria-hidden="true"> Edit</span>
+                        </a>
+                        <a class="link-danger" href="Delete/@contact.Id">
+                            <span class="oi oi-trash" aria-hidden="true"> Delete</span>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    List<Contact> contactObj;
+    private string CurrentlySorted;
+    private bool IsAscending;
+
+    private void SortTable(string columnName){
+        if(columnName != CurrentlySorted)
+        {
+            contactObj = contactObj.OrderBy(c => c.GetType()
+                                         .GetProperty(columnName)
+                                         .GetValue(c, null)).ToList();
+            CurrentlySorted = columnName;
+            IsAscending = true;
+        }
+        else
+        {
+            if(IsAscending)
+            {
+                contactObj = contactObj.OrderByDescending(c => c.GetType()
+                                         .GetProperty(columnName)
+                                         .GetValue(c, null)).ToList();
+            }
+            else
+            {
+                contactObj = contactObj.OrderBy(c => c.GetType()
+                                         .GetProperty(columnName)
+                                         .GetValue(c, null)).ToList();
+            }
+            IsAscending = !IsAscending;
+        }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        contactObj = await Task.Run(() => contactService.GetAllContacts());
+    }
+}
+
