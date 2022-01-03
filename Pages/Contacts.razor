@@ -77,7 +77,14 @@ else
     private string CurrentlySorted;
 
     private void SortTable(string columnName){
-
+        if(columnName != CurrentlySorted) 
+        {
+            contactObj = contactObj.OrderBy(c => 
+                                    c.GetType()
+                                    .GetProperty(columnName)
+                                    .GetValue(c, null)).ToList();
+            CurrentlySorted = columnName;
+        }
     }
     protected override async Task OnInitializedAsync()
     {
