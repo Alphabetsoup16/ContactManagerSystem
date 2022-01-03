@@ -9,12 +9,12 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<ContactService>();
 builder.Services.AddDbContext<ContactDbContext>(item => item.UseSqlite("Data Source=contacts.db"));
-//builder.Services.AddSyncfusionBlazor();
+builder.Services.AddSyncfusionBlazor();
 
 var app = builder.Build();
 
 //SyncFusion License Key
-//Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NTU3ODMyQDMxMzkyZTM0MmUzMFFpbWRpUm5xZ25ZVTdGcEZHQTlRTkM2bkdyckIzb1loSGNVejhRYlZTSE09");
+Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NTU3ODMyQDMxMzkyZTM0MmUzMFFpbWRpUm5xZ25ZVTdGcEZHQTlRTkM2bkdyckIzb1loSGNVejhRYlZTSE09");
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
