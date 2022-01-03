@@ -75,6 +75,7 @@ else
 @code {
     List<Contact> contactObj;
     private string CurrentlySorted;
+    private bool IsAscending;
 
     private void SortTable(string columnName){
         if(columnName != CurrentlySorted) 
@@ -84,6 +85,25 @@ else
                                     .GetProperty(columnName)
                                     .GetValue(c, null)).ToList();
             CurrentlySorted = columnName;
+            IsAscending = true;
+        }
+        else 
+        {
+            if(IsAscending)
+            {
+                contactObj = contactObj.OrderByDescending(c => 
+                                                  c.GetType()
+                                                   .GetProperty(columnName)
+                                                   .GetValue(c, null)).ToList();
+            }
+            else
+            {
+                contactObj = contactObj.OrderBy(c => 
+                                        c.GetType()
+                                         .GetProperty(columnName)
+                                         .GetValue(c, null)).ToList();
+            }
+            IsAscending = !IsAscending;
         }
     }
     protected override async Task OnInitializedAsync()
